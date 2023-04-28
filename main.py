@@ -1,98 +1,82 @@
-from binance.client import Client
-import pandas as pd
-#sql alchemy
-# print(client.get_account_status())
+
+import ctypes
+import sys
 
 
-def get_pair_name(name):
-    if name != 'USDT':
-        name = name + 'USDT'
-    else:
-        name = 'BUSD'+name
-    return name
+from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import QLineEdit
+
+from Binance.binance_api import *
+from Window.window_maker import *
 
 
-def show_actual_assets(client):
-    print(f"Posiadane aktywa")
-    account_info = client.get_account()
-    # pobranie o posiadanych aktywach nazwa:ilosc
-    balance = list(map(lambda x: {"name": x['asset'], "amount": x['free']},
-                       filter(lambda x: float(x['free']) > 0.0, account_info['balances'])))
-    # dopisanie wartosci jednej akcji, wszystkich razem i zmiana % w 24h
-    for i in balance:
-        name = get_pair_name(i['name'])
-        ticker = client.get_symbol_ticker(symbol=name)['price']
-        i['price'] = "{:.4s}".format(ticker)
-        i['value'] = round(float(ticker) * float(i['amount']), 2)
-        i['24h_change'] = round(change_price_in_hours('24', name, client), 2)
-    balance = sorted(balance, key=lambda x: x['value'], reverse=True)
-    #wyswietlanie tabel
-    for i in balance:
-        print(i)
+def synchroniza_time():
+    ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, "data_synch.py", None, 1)
+def upgrade_balance_on_account ():
+    hajs = window.findChild(QLabel,"hajs")
+    balance = get_actual_balance()
+    hajs.setText(f"Stan konta: {balance}")
 
-    return balance
-
-
-def change_price_in_hours(hours: str, symbol: str, client):
-    # powyzej 8 znakow to nie dziala XD
-    if len(symbol)>9:
-        return -101
-    # pobranie danych z binance o tym symbolu
-    candles =  client.get_klines(symbol=symbol, interval=Client.KLINE_INTERVAL_1HOUR, limit=hours, timestamp=None)
-
-    # przezucenie do pd
-    df = pd.DataFrame(candles, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume',
-                                    'close_time', 'quote_asset_volume', 'number_of_trades',
-                                    'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume',
-                                    'ignore'])
-
-    # pierwsza i ostatnia swieca
+def user_info():
+    ##TODO
+    ##zrobic panel uzytkownika z nazwa konta,ew jakies dane inne
+    pass
+def fill_current_assets():
+    current_asstets = window.findChild(QListWidget, "currentAssects")
+    actual_assets_data = show_actual_assets()
+    window.hajs.setText(f"Obecny stan konta: {get_actual_balance()} zł")
+    window.LiczbaPosiadanychAktywow.setText(f"Liczba aktywów: {len(actual_assets_data)}")
     try:
-        first_candle = df.iloc[0]
-        last_candle = df.iloc[-1]
+        window.currentAssects.clear()
     except:
-        return -101
-    price_change = float(last_candle['close']) - float(first_candle['open'])
-
-    # Obliczenie procentowego wzrostu lub spadku ceny
-    percent_change = price_change / float(first_candle['open']) * 100
-
-    #print(f"Procentowa zmiana ceny {symbol} w ciągu ostatnich {hours} godzin: {percent_change:.2f}%")
-    return percent_change
+        window.currentAssects.addItem(
+            f"Niepowodznie")
+    window.currentAssects.addItem(
+        f"Dostepne krypto:\nname |  amount |  price |  value |  24h_change |  udzial")
+    for i in actual_assets_data:
+        window.currentAssects.addItem(f"{i['name']} | {i['amount']} | {i['price']}$ | {i['value']}$ | {i['24h_change']}% | {i['udzial']}%")
 
 
-def get_actual_balance(client):
-    balance = ":.2f".format(client.get_asset_balance(asset='PLN'))
-    # print(balance['free'])
-    return balance['free']
 
+def search_market_button():
+    try:
+        search_market = window.findChild(QListWidget, "Search_market")
+        gross = int(window.search_market_grow.text())
+        time = str(window.search_market_time.text())
+    except:
+        window.search_market.addItem(f"Niepowodzenie 1")
+    try:
+        window.search_market.clear()
+        result = look_market(time,gross)
+        window.search_market.addItem(f"Wyszukiwanie...")
+    except:
+        window.search_market.addItem(f"Niepowodzenie 2")
 
-def look_market(client):
-    exchange_info = client.get_exchange_info()
-    # znalezienie par krypto dostepnych z USDT i mapwanie ich do kolumny ich symbolu np MATIC,BTC
-    symbols = list(sorted(map(lambda x: x['baseAsset'],
-                              filter(lambda x: x['quoteAsset'] == 'USDT', exchange_info['symbols']))))
-
-    # symbols = list(filter(lambda x : 0.5<float(client.get_symbol_ticker(symbol=get_pair_name(x))['price']) <70,symbols))
-    # for x in symbols:
-    #     print(client.get_symbol_ticker(symbol=get_pair_name(x)))
-
-    # znaleznienie najwiekszych i wiekszych od 1
-    symbols = list(sorted(
-                    filter(lambda x: float(change_price_in_hours('24', get_pair_name(x), client)) > 1.0, symbols)))
-    #key dodac jak zacznie dzialac
-    if symbols is None:
-        print("Brak danych")
-    else:
-        for symbol in symbols:
-            print(symbol)
-
-# show_actual_assets(client)
-# look_market(client)
+    window.search_market.addItem(
+        f"Dostepne krypto:\nname  |  value  |  grow in {time} hours")
+    for i in result:
+        window.search_market.addItem(
+            f"{i['symbol']} | {i['value']}$ | {i['gross']}% |")
 
 
 if __name__ == '__main__':
-    api_key = 'TAJNE'
-    api_secret = 'TAJNE'
-    client = Client(api_key, api_secret)
+
+
+    #synchronizacja czasu komputera i czasu servera Binance, potrzebne uprawnienia administratora
+    #
+
+    app = QtWidgets.QApplication([])
+    window = MyWindow()
+
+    window.UserInfo.clicked.connect(user_info)
+    window.Search_market_button.clicked.connect(search_market_button)
+    fill_current_assets()
+    window.my_timer = QTimer()
+    window.my_timer.timeout.connect(fill_current_assets)
+    window.my_timer.start(10000)
+    window.show()
+    app.exec()
+
+
     client.close_connection()
+    #look_market(client,'2',2.5)
