@@ -1,4 +1,4 @@
-<b><center> Binance-helper_Projekt_PJF </center></b>
+<b><center>Chwaszcz Kacper - Binance-helper_Projekt_PJF </center></b>
 
 Do prawidłowego działania potrzebny klucz API do giełdy kryptowalut Binance,
 na potrzeby projektu w kodzie znajduje się mój klucz z uprawnieniami tylko do odczytu danych.
