@@ -1,5 +1,8 @@
-from binance.client import Client
+import binance
+from binance import *
 from Window import window_maker
+# from binance.lib.utils import config_logging
+
 
 import pandas as pd
 #sql alchemy
@@ -31,7 +34,7 @@ def show_actual_assets():
         i['amount'] = '{:.6s}'.format(i['amount'])
         i['price'] = "{:.4s}".format(ticker)
         i['value'] = round(float(ticker) * float(i['amount']), 2)
-        i['24h_change'] = round(change_price_in_hours('24', name), 2)
+        i['24h_change'] = round(change_price_in_hours(Client.KLINE_INTERVAL_1DAY, name), 2)
     balance = sorted(balance, key=lambda x: x['value'], reverse=True)
 
     suma=0
@@ -43,6 +46,7 @@ def show_actual_assets():
         i['udzial'] = round(i['value'] / suma * 100, 2)
         # print(f"nazwa aktywa: [{i['name']}], udział: [{i['udzial']}]")
 
+
     return balance
 
 
@@ -53,7 +57,7 @@ def change_price_in_hours(hours: str, symbol: str):
         return -101
     # pobranie danych z binance o tym symbolu
 
-    candles =  client.get_klines(symbol=symbol, interval=Client.KLINE_INTERVAL_1HOUR, limit=hours, requests_params={'timeout': 120})
+    candles =  client.get_klines(symbol=symbol, interval=hours, limit=1)
     try:
         #cena otwarcia pierwszej swiecy
         first_candle = float(candles[0][1])
@@ -65,7 +69,6 @@ def change_price_in_hours(hours: str, symbol: str):
 
     # Obliczenie procentowego wzrostu lub spadku ceny
     percent_change = price_change / first_candle * 100
-    print(percent_change)
     #print(f"Procentowa zmiana ceny {symbol} w ciągu ostatnich {hours} godzin: {percent_change:.2f}%")
     return percent_change
 
@@ -76,36 +79,21 @@ def get_actual_balance():
     balance = round(float(balance),2)
     return balance
 
+def get_tradable_symbols():
+    all =  list(sorted(map(lambda x: x['baseAsset'],
+                              filter(lambda x: x['quoteAsset'] == 'BTC'
+                                     ,client.get_exchange_info()['symbols']))))
 
-def look_market(hours: str,value_up : float):
-    #dostepne krypto
+    return all
 
-    symbols = list(map(lambda x: x['baseAsset'],
-                              filter(lambda x: x['quoteAsset'] == 'USDT'
+def look_market(symbol,hours: str,value_up : float):
 
-                                     ,client.get_exchange_info()['symbols'])))
-    # znalezienie par krypto dostepnych z USDT i mapwanie ich do kolumny ich symbolu np MATIC,BTC
+    pair_name = get_pair_name(symbol)
+    change_price =(float(change_price_in_hours(hours, pair_name)))
 
-
-    # znaleznienie najwiekszych i wiekszych od podanej value_up
-    # symbols = list(
-    #                 filter(lambda x: float(change_price_in_hours(hours, get_pair_name(x)))  > value_up , symbols))
-    #key dodac jak zacznie dzialac
+    if change_price > value_up:
+        return {'symbol': symbol,
+                      'value': "{:.4s}".format(client.get_symbol_ticker(symbol=pair_name)['price']),
+                      'grow': "{:.2f}".format(change_price)}
 
 
-    for i in symbols:
-        a =(float(change_price_in_hours(hours, get_pair_name(i))))
-        if a >value_up:
-            result = {'symbol': i,
-                      'value': "{:.4s}".format(client.get_symbol_ticker(symbol=get_pair_name(i))['price']),
-                      'gross': "{:.2f}".format(a)}
-        else:
-            continue
-
-    if result is None:
-        print("Brak danych")
-    else:
-
-        for result in result:
-            print(result)
-    return result
