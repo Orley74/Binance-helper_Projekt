@@ -9,10 +9,19 @@ W przypadku wystąpienia błędu dotyczącego różnicy czasowej komutera i serv
 i ponownie włączyć główny kod programu.
 
 <b> Realizowane zadania:</b>
-- Pozyskiwanie aktualnego stanu konta użytkownika 
+- pozyskiwanie aktualnego stanu konta użytkownika
+- wyswietlanie najwększego wzrostu i bilansu użytkownika
+- zmiana trybu wyświetlania (ciemny,jasny) 
+
+- Możliwość sortowania rynku pod względem:
+  > zmiany procentowej w ostatnich 24 godzinach
+  > największej cenie
 
 - Pozyskiwanie aktualnego portfela użytkownika z danymi o wartości, ilości i ceny krypto (dane odświeżane co 10 sekund)
 
 - Przeszukiwanie rynku na podstawie:
   > wzrostu ceny w podanym czasie
  
+- Dodatkowo w pliku ML jest prosty model sztucznej inteligencji do predykcji cen
+  > działa na modelu sekwencyjnym Tensorflow
+  > model musi byc otwierany osobno nie działa on w pełni
