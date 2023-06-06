@@ -6,8 +6,14 @@ class MyWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
+
+
+
         # Inicjalizacja interfejsu użytkownika z pliku .ui
         uic.loadUi("interface.ui", self)
+
+
+
 
 
 
