@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>642</width>
-    <height>808</height>
+    <width>657</width>
+    <height>717</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,6 +22,12 @@
    <property name="styleSheet">
     <string notr="true">
 #currentAssects {
+border-radius: 12px;
+background-color: #83D8E9;
+overflow: auto;
+}
+
+#crypto_list {
 border-radius: 12px;
 background-color: #83D8E9;
 overflow: auto;
@@ -54,7 +60,7 @@ cursor: pointer;
 }</string>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
-    <item alignment="Qt::AlignTop">
+    <item alignment="Qt::AlignLeft">
      <widget class="QWidget" name="Top" native="true">
       <property name="styleSheet">
        <string notr="true"/>
@@ -79,36 +85,17 @@ cursor: pointer;
          </property>
         </widget>
        </item>
-       <item alignment="Qt::AlignRight|Qt::AlignVCenter">
-        <widget class="QPushButton" name="UserInfo">
-         <property name="maximumSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border-radius: 50% 50% 50% 50%;</string>
-         </property>
+       <item>
+        <widget class="QPushButton" name="window_Style">
          <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="resources/resources.qrc">
-           <normaloff>:/icons/user.svg</normaloff>:/icons/user.svg</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
+          <string>Tryb jasny</string>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
-    <item alignment="Qt::AlignTop">
+    <item>
      <widget class="QWidget" name="widget" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
@@ -145,6 +132,106 @@ cursor: pointer;
       </layout>
      </widget>
     </item>
+    <item alignment="Qt::AlignVCenter">
+     <widget class="QWidget" name="widget_5" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>30</height>
+       </size>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+        <widget class="QWidget" name="widget_6" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QRadioButton" name="your_crypto_value">
+            <property name="text">
+             <string>Wartość</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="your_crypto_per">
+            <property name="text">
+             <string>% wzrostu</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+        <widget class="QWidget" name="widget_7" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QRadioButton" name="all_crypto_value">
+            <property name="text">
+             <string>Wartość</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="all_crypto_per">
+            <property name="text">
+             <string>% wzrostu</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
     <item>
      <widget class="QWidget" name="widget_3" native="true">
       <property name="styleSheet">
@@ -152,8 +239,8 @@ cursor: pointer;
 	background-color: grey;
 }</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item alignment="Qt::AlignVCenter">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
         <widget class="QListWidget" name="currentAssects">
          <property name="styleSheet">
           <string notr="true">#currentAssects{
@@ -173,10 +260,24 @@ cursor: pointer;
          </item>
         </widget>
        </item>
+       <item>
+        <widget class="QListWidget" name="crypto_list">
+         <item>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Dostepne krypto:</string>
+          </property>
+         </item>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
-    <item alignment="Qt::AlignTop">
+    <item>
      <widget class="QWidget" name="widget_2" native="true">
       <property name="minimumSize">
        <size>
@@ -209,33 +310,27 @@ cursor: pointer;
           <string/>
          </property>
          <property name="placeholderText">
-          <string>Gross</string>
+          <string>Grow</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="search_market_time">
-         <property name="minimumSize">
-          <size>
-           <width>113</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>150</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border-radius: 12px;</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="placeholderText">
-          <string>Time</string>
-         </property>
+        <widget class="QComboBox" name="search_type">
+         <item>
+          <property name="text">
+           <string>wzrost w czasie</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>volumen</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Nowy element</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item>
@@ -366,9 +461,10 @@ color :rgb(255, 255, 255)</string>
           <property name="text">
            <string/>
           </property>
-          <property name="icon">
-           <iconset resource="resources/resources.qrc">
-            <normaloff>:/icons/anchor.svg</normaloff>:/icons/anchor.svg</iconset>
+         </item>
+         <item>
+          <property name="text">
+           <string/>
           </property>
          </item>
         </widget>
@@ -383,7 +479,7 @@ color :rgb(255, 255, 255)</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>642</width>
+     <width>657</width>
      <height>22</height>
     </rect>
    </property>
